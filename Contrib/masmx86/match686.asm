@@ -23,7 +23,7 @@
 ;           ml /coff /Zi /c /Flmatch686.lst match686.asm
 ;    and do not include match686.obj in your project
 ;
-; note: contrib of zLib 1.2.3 and earlier contained both a deprecated version for
+; note: Contrib of zLib 1.2.3 and earlier contained both a deprecated version for
 ;  Pentium (prior Pentium Pro) and this version for Pentium Pro and modern processor
 ;  with autoselect (with cpu detection code)
 ;  if you want support the old pentium optimization, you can still use these version

@@ -89,9 +89,9 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR})
 
 IF (CMAKE_COMPILER_IS_GNUCC)
     IF (ASM686)
-        SET(ZLIB_ASMS contrib/asm686/match.S)
+        SET(ZLIB_ASMS Contrib/asm686/match.S)
     ELSEIF (AMD64)
-        SET(ZLIB_ASMS contrib/amd64/amd64-match.S)
+        SET(ZLIB_ASMS Contrib/amd64/amd64-match.S)
     ENDIF ()
 
     IF (ZLIB_ASMS)
@@ -104,14 +104,14 @@ IF (MSVC)
     IF (ASM686)
         ENABLE_LANGUAGE(ASM_MASM)
         SET(ZLIB_ASMS
-                contrib/masmx86/inffas32.asm
-                contrib/masmx86/match686.asm
+                Contrib/masmx86/inffas32.asm
+                Contrib/masmx86/match686.asm
                 )
     ELSEIF (AMD64)
         ENABLE_LANGUAGE(ASM_MASM)
         SET(ZLIB_ASMS
-                contrib/masmx64/gvmat64.asm
-                contrib/masmx64/inffasx64.asm
+                Contrib/masmx64/gvmat64.asm
+                Contrib/masmx64/inffasx64.asm
                 )
     ENDIF ()
 
