@@ -267,19 +267,19 @@ endif()
 #============================================================================
 
 add_executable(example test/example.c)
-target_link_libraries(example zlib)
+target_link_libraries(example PRIVATE ZLib::Framework)
 add_test(example example)
 
 add_executable(minigzip test/minigzip.c)
-target_link_libraries(minigzip zlib)
+target_link_libraries(minigzip PRIVATE ZLib::Framework)
 
 if(HAVE_OFF64_T)
     add_executable(example64 test/example.c)
-    target_link_libraries(example64 zlib)
+    target_link_libraries(example64 PRIVATE ZLib::Framework)
     set_target_properties(example64 PROPERTIES COMPILE_FLAGS "-D_FILE_OFFSET_BITS=64")
     add_test(example64 example64)
 
     add_executable(minigzip64 test/minigzip.c)
-    target_link_libraries(minigzip64 zlib)
+    target_link_libraries(minigzip64 PRIVATE ZLib::Framework)
     set_target_properties(minigzip64 PROPERTIES COMPILE_FLAGS "-D_FILE_OFFSET_BITS=64")
 endif()
