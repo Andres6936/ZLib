@@ -87,13 +87,6 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR})
 # zlib
 #============================================================================
 
-
-IF (NOT MINGW)
-    SET(ZLIB_DLL_SRCS
-            win32/zlib1.rc # If present will override custom build rule below.
-            )
-ENDIF ()
-
 IF (CMAKE_COMPILER_IS_GNUCC)
     IF (ASM686)
         SET(ZLIB_ASMS contrib/asm686/match.S)
@@ -132,21 +125,6 @@ FILE(READ Include/ZLib/zlib.h _zlib_h_contents)
 STRING(REGEX REPLACE ".*#define[ \t]+ZLIB_VERSION[ \t]+\"([-0-9A-Za-z.]+)\".*"
         "\\1" ZLIB_FULL_VERSION ${_zlib_h_contents})
 
-IF (MINGW)
-    # This gets us DLL resource information when compiling on MinGW.
-    IF (NOT CMAKE_RC_COMPILER)
-        SET(CMAKE_RC_COMPILER windres.exe)
-    ENDIF ()
-
-    ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/zlib1rc.obj
-            COMMAND ${CMAKE_RC_COMPILER}
-            -D GCC_WINDRES
-            -I ${CMAKE_CURRENT_SOURCE_DIR}
-            -I ${CMAKE_CURRENT_BINARY_DIR}
-            -o ${CMAKE_CURRENT_BINARY_DIR}/zlib1rc.obj
-            -i ${CMAKE_CURRENT_SOURCE_DIR}/win32/zlib1.rc)
-    SET(ZLIB_DLL_SRCS ${CMAKE_CURRENT_BINARY_DIR}/zlib1rc.obj)
-ENDIF (MINGW)
 
 
 # The OBJECT's can be used to compile the sources in the list given to add_library
@@ -174,7 +152,6 @@ ADD_LIBRARY(ZLib.Framework.Object OBJECT
         Source/zutil.c
 
         ${ZLIB_ASMS}
-        ${ZLIB_DLL_SRCS}
         )
 
 SET_TARGET_PROPERTIES(ZLib.Framework.Object PROPERTIES C_STANDARD 11)
