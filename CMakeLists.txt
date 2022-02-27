@@ -1,18 +1,15 @@
-cmake_minimum_required(VERSION 2.4.4)
+cmake_minimum_required(VERSION 3.14)
 set(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS ON)
 
-project(zlib C)
+project(ZLib LANGUAGES C VERSION 2022.2.27)
 
 set(VERSION "1.2.11")
+SET(ZLIB_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+SET(ZLIB_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
 
 option(ASM686 "Enable building i686 assembly implementation")
 option(AMD64 "Enable building amd64 assembly implementation")
-
-set(INSTALL_BIN_DIR "${CMAKE_INSTALL_PREFIX}/bin" CACHE PATH "Installation directory for executables")
-set(INSTALL_LIB_DIR "${CMAKE_INSTALL_PREFIX}/lib" CACHE PATH "Installation directory for libraries")
-set(INSTALL_INC_DIR "${CMAKE_INSTALL_PREFIX}/include" CACHE PATH "Installation directory for headers")
-set(INSTALL_MAN_DIR "${CMAKE_INSTALL_PREFIX}/share/man" CACHE PATH "Installation directory for manual pages")
-set(INSTALL_PKGCONFIG_DIR "${CMAKE_INSTALL_PREFIX}/share/pkgconfig" CACHE PATH "Installation directory for pkgconfig (.pc) files")
+OPTION(ZLIB_BUILD_SHARED_LIBS "Build Shared Lib for ZLib" OFF)
 
 include(CheckTypeSize)
 include(CheckFunctionExists)
@@ -183,6 +180,60 @@ if(MINGW)
     set(ZLIB_DLL_SRCS ${CMAKE_CURRENT_BINARY_DIR}/zlib1rc.obj)
 endif(MINGW)
 
+
+# The OBJECT's can be used to compile the sources in the list given to add_library
+# to object files, but then neither archiving them into a static library nor
+# linking them into a shared object. The use of object libraries is
+# particularly useful if one needs to create both static and shared libraries
+# in one go.
+
+# Property: OBJECT
+ADD_LIBRARY(ZLib.Framework.Object OBJECT
+        adler32.c
+        compress.c
+        crc32.c
+        deflate.c
+        gzclose.c
+        gzlib.c
+        gzread.c
+        gzwrite.c
+        inflate.c
+        infback.c
+        inftrees.c
+        inffast.c
+        trees.c
+        uncompr.c
+        zutil.c
+
+        ${ZLIB_ASMS}
+        ${ZLIB_DLL_SRCS}
+        )
+
+SET_TARGET_PROPERTIES(ZLib.Framework.Object PROPERTIES C_STANDARD 11)
+TARGET_INCLUDE_DIRECTORIES(ZLib.Framework.Object PUBLIC $<BUILD_INTERFACE:${ZLIB_SOURCE_DIR}>)
+
+IF (ZLIB_BUILD_SHARED_LIBS)
+
+    # The POSITION_INDEPENDENT_CODE property determines whether position independent executables or
+    # shared libraries will be created. This property is True by default for SHARED and MODULE library
+    # targets and False otherwise.
+
+    # Property: SHARED, POSITION_INDEPENDENT_CODE
+    ADD_LIBRARY(ZLib.Framework SHARED $<TARGET_OBJECTS:ZLib.Framework.Object>)
+
+ELSE ()
+
+    ADD_LIBRARY(ZLib.Framework STATIC $<TARGET_OBJECTS:ZLib.Framework.Object>)
+
+ENDIF ()
+
+ADD_LIBRARY(ZLib::Framework ALIAS ZLib.Framework)
+SET_TARGET_PROPERTIES(ZLib.Framework PROPERTIES C_STANDARD 11)
+# It is necessary to repeat these instructions again, in case of not doing it, the executables
+# will be unable to locate the Headers needed to perform the linking
+TARGET_INCLUDE_DIRECTORIES(ZLib.Framework PUBLIC $<BUILD_INTERFACE:${ZLIB_SOURCE_DIR}>)
+
+
 add_library(zlib SHARED ${ZLIB_SRCS} ${ZLIB_ASMS} ${ZLIB_DLL_SRCS} ${ZLIB_PUBLIC_HDRS} ${ZLIB_PRIVATE_HDRS})
 add_library(zlibstatic STATIC ${ZLIB_SRCS} ${ZLIB_ASMS} ${ZLIB_PUBLIC_HDRS} ${ZLIB_PRIVATE_HDRS})
 set_target_properties(zlib PROPERTIES DEFINE_SYMBOL ZLIB_DLL)
@@ -210,21 +261,6 @@ elseif(BUILD_SHARED_LIBS AND WIN32)
     set_target_properties(zlib PROPERTIES SUFFIX "1.dll")
 endif()
 
-if(NOT SKIP_INSTALL_LIBRARIES AND NOT SKIP_INSTALL_ALL )
-    install(TARGETS zlib zlibstatic
-        RUNTIME DESTINATION "${INSTALL_BIN_DIR}"
-        ARCHIVE DESTINATION "${INSTALL_LIB_DIR}"
-        LIBRARY DESTINATION "${INSTALL_LIB_DIR}" )
-endif()
-if(NOT SKIP_INSTALL_HEADERS AND NOT SKIP_INSTALL_ALL )
-    install(FILES ${ZLIB_PUBLIC_HDRS} DESTINATION "${INSTALL_INC_DIR}")
-endif()
-if(NOT SKIP_INSTALL_FILES AND NOT SKIP_INSTALL_ALL )
-    install(FILES zlib.3 DESTINATION "${INSTALL_MAN_DIR}/man3")
-endif()
-if(NOT SKIP_INSTALL_FILES AND NOT SKIP_INSTALL_ALL )
-    install(FILES ${ZLIB_PC} DESTINATION "${INSTALL_PKGCONFIG_DIR}")
-endif()
 
 #============================================================================
 # Example binaries
