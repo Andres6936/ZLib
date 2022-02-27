@@ -380,7 +380,7 @@ inflate_fast:
         popf
         pushf
         popl    %edx              /* copy new eflags to edx */
-        xorl    %eax, %edx        /* test if ID bit is flipped */
+        xorl    %eax, %edx        /* Test if ID bit is flipped */
         jz      .L_dont_use_mmx   /* not flipped if zero */
         xorl    %eax, %eax
         cpuid
@@ -396,7 +396,7 @@ inflate_fast:
         andl    $15, %eax
         cmpl    $6, %eax          /* check for Pentium family, is 0xf for P4 */
         jne     .L_dont_use_mmx
-        testl   $0x800000, %edx   /* test if MMX feature is set (bit 23) */
+        testl   $0x800000, %edx   /* Test if MMX feature is set (bit 23) */
         jnz     .L_use_mmx
         jmp     .L_dont_use_mmx
 .L_use_mmx:

@@ -226,7 +226,7 @@ printf("#define dsNiceMatch     %u\n",(int)(((char*)&(s->nice_match))-((char*)s)
 LastMatchGood:
 
 //;;; chainlen is decremented once beforehand so that the function can
-//;;; use the sign flag instead of the zero flag for the exit test.
+//;;; use the sign flag instead of the zero flag for the exit Test.
 //;;; It is then shifted into the high word, to make room for the wmask
 //;;; value, which it will always accompany.
 

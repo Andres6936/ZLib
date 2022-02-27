@@ -58,7 +58,7 @@
  *                      - Add FIXLCODES #define
  * 1.5   6 Apr 2002     - Minor comment fixes
  * 1.6   7 Aug 2002     - Minor format changes
- * 1.7   3 Mar 2003     - Added test code for distribution
+ * 1.7   3 Mar 2003     - Added Test code for distribution
  *                      - Added zlib-like license
  * 1.8   9 Jan 2004     - Added some comments on no distance codes case
  * 1.9  21 Feb 2008     - Fix bug on 16-bit integer architectures [Pohland]
@@ -72,10 +72,10 @@
  * 2.2  25 Apr 2010     - Fix bug in variable initializations [Oberhumer]
  *                      - Add const where appropriate [Oberhumer]
  *                      - Split if's and ?'s for coverage testing
- *                      - Break out test code to separate file
+ *                      - Break out Test code to separate file
  *                      - Move NIL to puff.h
  *                      - Allow incomplete code only if single code length is 1
- *                      - Add full code coverage test to Makefile
+ *                      - Add full code coverage Test to Makefile
  * 2.3  21 Jan 2013     - Check for invalid code length codes in dynamic blocks
  */
 
@@ -330,7 +330,7 @@ local int decode(struct state *s, const struct huffman *h)
  *
  * Format notes:
  *
- * - Permitted and expected examples of incomplete codes are one of the fixed
+ * - Permitted and expected Examples of incomplete codes are one of the fixed
  *   codes and any code with a single symbol which in deflate is coded as one
  *   bit instead of zero bits.  See the format notes for fixed() and dynamic().
  *

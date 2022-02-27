@@ -185,20 +185,20 @@ TARGET_INCLUDE_DIRECTORIES(ZLib.Framework PUBLIC $<BUILD_INTERFACE:${ZLIB_SOURCE
 # Example binaries
 #============================================================================
 
-ADD_EXECUTABLE(example test/example.c)
+ADD_EXECUTABLE(example Test/example.c)
 TARGET_LINK_LIBRARIES(example PRIVATE ZLib::Framework)
 ADD_TEST(example example)
 
-ADD_EXECUTABLE(minigzip test/minigzip.c)
+ADD_EXECUTABLE(minigzip Test/minigzip.c)
 TARGET_LINK_LIBRARIES(minigzip PRIVATE ZLib::Framework)
 
 IF (HAVE_OFF64_T)
-    ADD_EXECUTABLE(example64 test/example.c)
+    ADD_EXECUTABLE(example64 Test/example.c)
     TARGET_LINK_LIBRARIES(example64 PRIVATE ZLib::Framework)
     SET_TARGET_PROPERTIES(example64 PROPERTIES COMPILE_FLAGS "-D_FILE_OFFSET_BITS=64")
     ADD_TEST(example64 example64)
 
-    ADD_EXECUTABLE(minigzip64 test/minigzip.c)
+    ADD_EXECUTABLE(minigzip64 Test/minigzip.c)
     TARGET_LINK_LIBRARIES(minigzip64 PRIVATE ZLib::Framework)
     SET_TARGET_PROPERTIES(minigzip64 PROPERTIES COMPILE_FLAGS "-D_FILE_OFFSET_BITS=64")
 ENDIF ()
