@@ -4,7 +4,7 @@ CFLAGS=-g
 untgz: untgz.o ../../libz.a
 	$(CC) $(CFLAGS) -o untgz untgz.o -L../.. -lz
 
-untgz.o: untgz.c ../../zlib.h
+untgz.o: untgz.c ../../Include/ZLib/zlib.h
 	$(CC) $(CFLAGS) -c -I../.. untgz.c
 
 ../../libz.a:

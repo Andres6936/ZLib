@@ -5,9 +5,9 @@
 
 /* @(#) $Id$ */
 
-#include "zutil.h"
+#include "ZLib/zutil.h"
 #ifndef Z_SOLO
-#  include "gzguts.h"
+#  include "Include/ZLib/gzguts.h"
 #endif
 
 z_const char * const z_errmsg[10] = {

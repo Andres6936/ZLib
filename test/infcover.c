@@ -9,13 +9,13 @@
 #include <stdlib.h>
 #include <string.h>
 #include <assert.h>
-#include "zlib.h"
+#include "ZLib/zlib.h"
 
 /* get definition of internal structure so we can mess with it (see pull()),
    and so we can call inflate_trees() (see cover5()) */
 #define ZLIB_INTERNAL
-#include "inftrees.h"
-#include "inflate.h"
+#include "ZLib/inftrees.h"
+#include "ZLib/inflate.h"
 
 #define local static
 

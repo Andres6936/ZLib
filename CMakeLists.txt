@@ -87,38 +87,6 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR})
 # zlib
 #============================================================================
 
-SET(ZLIB_PUBLIC_HDRS
-        ${CMAKE_CURRENT_BINARY_DIR}/zconf.h
-        zlib.h
-        )
-SET(ZLIB_PRIVATE_HDRS
-        crc32.h
-        deflate.h
-        gzguts.h
-        inffast.h
-        inffixed.h
-        inflate.h
-        inftrees.h
-        trees.h
-        zutil.h
-        )
-SET(ZLIB_SRCS
-        adler32.c
-        compress.c
-        crc32.c
-        deflate.c
-        gzclose.c
-        gzlib.c
-        gzread.c
-        gzwrite.c
-        inflate.c
-        infback.c
-        inftrees.c
-        inffast.c
-        trees.c
-        uncompr.c
-        zutil.c
-        )
 
 IF (NOT MINGW)
     SET(ZLIB_DLL_SRCS
@@ -160,7 +128,7 @@ IF (MSVC)
 ENDIF ()
 
 # parse the full version number from zlib.h and include in ZLIB_FULL_VERSION
-FILE(READ ${CMAKE_CURRENT_SOURCE_DIR}/zlib.h _zlib_h_contents)
+FILE(READ Include/ZLib/zlib.h _zlib_h_contents)
 STRING(REGEX REPLACE ".*#define[ \t]+ZLIB_VERSION[ \t]+\"([-0-9A-Za-z.]+)\".*"
         "\\1" ZLIB_FULL_VERSION ${_zlib_h_contents})
 
@@ -189,28 +157,28 @@ ENDIF (MINGW)
 
 # Property: OBJECT
 ADD_LIBRARY(ZLib.Framework.Object OBJECT
-        adler32.c
-        compress.c
-        crc32.c
-        deflate.c
-        gzclose.c
-        gzlib.c
-        gzread.c
-        gzwrite.c
-        inflate.c
-        infback.c
-        inftrees.c
-        inffast.c
-        trees.c
-        uncompr.c
-        zutil.c
+        Source/adler32.c
+        Source/compress.c
+        Source/crc32.c
+        Source/deflate.c
+        Source/gzclose.c
+        Source/gzlib.c
+        Source/gzread.c
+        Source/gzwrite.c
+        Source/inflate.c
+        Source/infback.c
+        Source/inftrees.c
+        Source/inffast.c
+        Source/trees.c
+        Source/uncompr.c
+        Source/zutil.c
 
         ${ZLIB_ASMS}
         ${ZLIB_DLL_SRCS}
         )
 
 SET_TARGET_PROPERTIES(ZLib.Framework.Object PROPERTIES C_STANDARD 11)
-TARGET_INCLUDE_DIRECTORIES(ZLib.Framework.Object PUBLIC $<BUILD_INTERFACE:${ZLIB_SOURCE_DIR}>)
+TARGET_INCLUDE_DIRECTORIES(ZLib.Framework.Object PUBLIC $<BUILD_INTERFACE:${ZLIB_SOURCE_DIR}/Include/>)
 
 IF (ZLIB_BUILD_SHARED_LIBS)
 
@@ -229,15 +197,11 @@ ENDIF ()
 
 ADD_LIBRARY(ZLib::Framework ALIAS ZLib.Framework)
 SET_TARGET_PROPERTIES(ZLib.Framework PROPERTIES C_STANDARD 11)
+SET_TARGET_PROPERTIES(ZLib.Framework PROPERTIES DEFINE_SYMBOL ZLIB_DLL)
 # It is necessary to repeat these instructions again, in case of not doing it, the executables
 # will be unable to locate the Headers needed to perform the linking
-TARGET_INCLUDE_DIRECTORIES(ZLib.Framework PUBLIC $<BUILD_INTERFACE:${ZLIB_SOURCE_DIR}>)
+TARGET_INCLUDE_DIRECTORIES(ZLib.Framework PUBLIC $<BUILD_INTERFACE:${ZLIB_SOURCE_DIR}/Include/>)
 
-
-ADD_LIBRARY(zlib SHARED ${ZLIB_SRCS} ${ZLIB_ASMS} ${ZLIB_DLL_SRCS} ${ZLIB_PUBLIC_HDRS} ${ZLIB_PRIVATE_HDRS})
-ADD_LIBRARY(zlibstatic STATIC ${ZLIB_SRCS} ${ZLIB_ASMS} ${ZLIB_PUBLIC_HDRS} ${ZLIB_PRIVATE_HDRS})
-SET_TARGET_PROPERTIES(zlib PROPERTIES DEFINE_SYMBOL ZLIB_DLL)
-SET_TARGET_PROPERTIES(zlib PROPERTIES SOVERSION 1)
 
 
 #============================================================================

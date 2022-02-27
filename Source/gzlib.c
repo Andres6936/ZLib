@@ -3,7 +3,7 @@
  * For conditions of distribution and use, see copyright notice in zlib.h
  */
 
-#include "gzguts.h"
+#include "ZLib/gzguts.h"
 
 #if defined(_WIN32) && !defined(__BORLANDC__) && !defined(__MINGW32__)
 #  define LSEEK _lseeki64

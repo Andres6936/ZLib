@@ -3,7 +3,7 @@
 #define zfstream_h
 
 #include <fstream.h>
-#include "zlib.h"
+#include "ZLib/zlib.h"
 
 class gzfilebuf : public streambuf {
 

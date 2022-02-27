@@ -55,7 +55,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "zlib.h"
+#include "ZLib/zlib.h"
 
 #define local static
 

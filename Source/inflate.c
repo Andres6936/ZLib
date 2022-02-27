@@ -80,10 +80,10 @@
  * The history for versions after 1.2.0 are in ChangeLog in zlib distribution.
  */
 
-#include "zutil.h"
-#include "inftrees.h"
-#include "inflate.h"
-#include "inffast.h"
+#include "ZLib/zutil.h"
+#include "ZLib/inftrees.h"
+#include "ZLib/inflate.h"
+#include "ZLib/inffast.h"
 
 #ifdef MAKEFIXED
 #  ifndef BUILDFIXED
@@ -310,7 +310,8 @@ struct inflate_state FAR *state;
         virgin = 0;
     }
 #else /* !BUILDFIXED */
-#   include "inffixed.h"
+#   include "Include/ZLib/inffixed.h"
+
 #endif /* BUILDFIXED */
     state->lencode = lenfix;
     state->lenbits = 9;
