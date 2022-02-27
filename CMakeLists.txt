@@ -1,7 +1,7 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.14)
 SET(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS ON)
 
-PROJECT(ZLib LANGUAGES C VERSION 2022.2.27)
+PROJECT(ZLib LANGUAGES C CXX VERSION 2022.2.27)
 
 SET(VERSION "1.2.11")
 SET(ZLIB_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
@@ -185,7 +185,7 @@ TARGET_INCLUDE_DIRECTORIES(ZLib.Framework PUBLIC $<BUILD_INTERFACE:${ZLIB_SOURCE
 # Example binaries
 #============================================================================
 
-ADD_EXECUTABLE(example Test/example.c)
+ADD_EXECUTABLE(example Test/Example.cpp)
 TARGET_LINK_LIBRARIES(example PRIVATE ZLib::Framework)
 ADD_TEST(example example)
 
@@ -193,7 +193,7 @@ ADD_EXECUTABLE(minigzip Test/minigzip.c)
 TARGET_LINK_LIBRARIES(minigzip PRIVATE ZLib::Framework)
 
 IF (HAVE_OFF64_T)
-    ADD_EXECUTABLE(example64 Test/example.c)
+    ADD_EXECUTABLE(example64 Test/Example.cpp)
     TARGET_LINK_LIBRARIES(example64 PRIVATE ZLib::Framework)
     SET_TARGET_PROPERTIES(example64 PROPERTIES COMPILE_FLAGS "-D_FILE_OFFSET_BITS=64")
     ADD_TEST(example64 example64)
