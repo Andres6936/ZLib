@@ -1,184 +1,184 @@
-cmake_minimum_required(VERSION 3.14)
-set(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS ON)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.14)
+SET(CMAKE_ALLOW_LOOSE_LOOP_CONSTRUCTS ON)
 
-project(ZLib LANGUAGES C VERSION 2022.2.27)
+PROJECT(ZLib LANGUAGES C VERSION 2022.2.27)
 
-set(VERSION "1.2.11")
+SET(VERSION "1.2.11")
 SET(ZLIB_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 SET(ZLIB_BINARY_DIR ${CMAKE_CURRENT_BINARY_DIR})
 
-option(ASM686 "Enable building i686 assembly implementation")
-option(AMD64 "Enable building amd64 assembly implementation")
+OPTION(ASM686 "Enable building i686 assembly implementation")
+OPTION(AMD64 "Enable building amd64 assembly implementation")
 OPTION(ZLIB_BUILD_SHARED_LIBS "Build Shared Lib for ZLib" OFF)
 
-include(CheckTypeSize)
-include(CheckFunctionExists)
-include(CheckIncludeFile)
-include(CheckCSourceCompiles)
-enable_testing()
+INCLUDE(CheckTypeSize)
+INCLUDE(CheckFunctionExists)
+INCLUDE(CheckIncludeFile)
+INCLUDE(CheckCSourceCompiles)
+ENABLE_TESTING()
 
-check_include_file(sys/types.h HAVE_SYS_TYPES_H)
-check_include_file(stdint.h    HAVE_STDINT_H)
-check_include_file(stddef.h    HAVE_STDDEF_H)
+CHECK_INCLUDE_FILE(sys/types.h HAVE_SYS_TYPES_H)
+CHECK_INCLUDE_FILE(stdint.h HAVE_STDINT_H)
+CHECK_INCLUDE_FILE(stddef.h HAVE_STDDEF_H)
 
 #
 # Check to see if we have large file support
 #
-set(CMAKE_REQUIRED_DEFINITIONS -D_LARGEFILE64_SOURCE=1)
+SET(CMAKE_REQUIRED_DEFINITIONS -D_LARGEFILE64_SOURCE=1)
 # We add these other definitions here because CheckTypeSize.cmake
 # in CMake 2.4.x does not automatically do so and we want
 # compatibility with CMake 2.4.x.
-if(HAVE_SYS_TYPES_H)
-    list(APPEND CMAKE_REQUIRED_DEFINITIONS -DHAVE_SYS_TYPES_H)
-endif()
-if(HAVE_STDINT_H)
-    list(APPEND CMAKE_REQUIRED_DEFINITIONS -DHAVE_STDINT_H)
-endif()
-if(HAVE_STDDEF_H)
-    list(APPEND CMAKE_REQUIRED_DEFINITIONS -DHAVE_STDDEF_H)
-endif()
-check_type_size(off64_t OFF64_T)
-if(HAVE_OFF64_T)
-   add_definitions(-D_LARGEFILE64_SOURCE=1)
-endif()
-set(CMAKE_REQUIRED_DEFINITIONS) # clear variable
+IF (HAVE_SYS_TYPES_H)
+    LIST(APPEND CMAKE_REQUIRED_DEFINITIONS -DHAVE_SYS_TYPES_H)
+ENDIF ()
+IF (HAVE_STDINT_H)
+    LIST(APPEND CMAKE_REQUIRED_DEFINITIONS -DHAVE_STDINT_H)
+ENDIF ()
+IF (HAVE_STDDEF_H)
+    LIST(APPEND CMAKE_REQUIRED_DEFINITIONS -DHAVE_STDDEF_H)
+ENDIF ()
+CHECK_TYPE_SIZE(off64_t OFF64_T)
+IF (HAVE_OFF64_T)
+    ADD_DEFINITIONS(-D_LARGEFILE64_SOURCE=1)
+ENDIF ()
+SET(CMAKE_REQUIRED_DEFINITIONS) # clear variable
 
 #
 # Check for fseeko
 #
-check_function_exists(fseeko HAVE_FSEEKO)
-if(NOT HAVE_FSEEKO)
-    add_definitions(-DNO_FSEEKO)
-endif()
+CHECK_FUNCTION_EXISTS(fseeko HAVE_FSEEKO)
+IF (NOT HAVE_FSEEKO)
+    ADD_DEFINITIONS(-DNO_FSEEKO)
+ENDIF ()
 
 #
 # Check for unistd.h
 #
-check_include_file(unistd.h Z_HAVE_UNISTD_H)
+CHECK_INCLUDE_FILE(unistd.h Z_HAVE_UNISTD_H)
 
-if(MSVC)
-    set(CMAKE_DEBUG_POSTFIX "d")
-    add_definitions(-D_CRT_SECURE_NO_DEPRECATE)
-    add_definitions(-D_CRT_NONSTDC_NO_DEPRECATE)
-    include_directories(${CMAKE_CURRENT_SOURCE_DIR})
-endif()
+IF (MSVC)
+    SET(CMAKE_DEBUG_POSTFIX "d")
+    ADD_DEFINITIONS(-D_CRT_SECURE_NO_DEPRECATE)
+    ADD_DEFINITIONS(-D_CRT_NONSTDC_NO_DEPRECATE)
+    INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+ENDIF ()
 
-if(NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_CURRENT_BINARY_DIR)
+IF (NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_CURRENT_BINARY_DIR)
     # If we're doing an out of source build and the user has a zconf.h
     # in their source tree...
-    if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/zconf.h)
-        message(STATUS "Renaming")
-        message(STATUS "    ${CMAKE_CURRENT_SOURCE_DIR}/zconf.h")
-        message(STATUS "to 'zconf.h.included' because this file is included with zlib")
-        message(STATUS "but CMake generates it automatically in the build directory.")
-        file(RENAME ${CMAKE_CURRENT_SOURCE_DIR}/zconf.h ${CMAKE_CURRENT_SOURCE_DIR}/zconf.h.included)
-  endif()
-endif()
+    IF (EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/zconf.h)
+        MESSAGE(STATUS "Renaming")
+        MESSAGE(STATUS "    ${CMAKE_CURRENT_SOURCE_DIR}/zconf.h")
+        MESSAGE(STATUS "to 'zconf.h.included' because this file is included with zlib")
+        MESSAGE(STATUS "but CMake generates it automatically in the build directory.")
+        FILE(RENAME ${CMAKE_CURRENT_SOURCE_DIR}/zconf.h ${CMAKE_CURRENT_SOURCE_DIR}/zconf.h.included)
+    ENDIF ()
+ENDIF ()
 
-set(ZLIB_PC ${CMAKE_CURRENT_BINARY_DIR}/zlib.pc)
-configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/zlib.pc.cmakein
-		${ZLIB_PC} @ONLY)
-configure_file(	${CMAKE_CURRENT_SOURCE_DIR}/zconf.h.cmakein
-		${CMAKE_CURRENT_BINARY_DIR}/zconf.h @ONLY)
-include_directories(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR})
+SET(ZLIB_PC ${CMAKE_CURRENT_BINARY_DIR}/zlib.pc)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/zlib.pc.cmakein
+        ${ZLIB_PC} @ONLY)
+CONFIGURE_FILE(${CMAKE_CURRENT_SOURCE_DIR}/zconf.h.cmakein
+        ${CMAKE_CURRENT_BINARY_DIR}/zconf.h @ONLY)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_SOURCE_DIR})
 
 
 #============================================================================
 # zlib
 #============================================================================
 
-set(ZLIB_PUBLIC_HDRS
-    ${CMAKE_CURRENT_BINARY_DIR}/zconf.h
-    zlib.h
-)
-set(ZLIB_PRIVATE_HDRS
-    crc32.h
-    deflate.h
-    gzguts.h
-    inffast.h
-    inffixed.h
-    inflate.h
-    inftrees.h
-    trees.h
-    zutil.h
-)
-set(ZLIB_SRCS
-    adler32.c
-    compress.c
-    crc32.c
-    deflate.c
-    gzclose.c
-    gzlib.c
-    gzread.c
-    gzwrite.c
-    inflate.c
-    infback.c
-    inftrees.c
-    inffast.c
-    trees.c
-    uncompr.c
-    zutil.c
-)
+SET(ZLIB_PUBLIC_HDRS
+        ${CMAKE_CURRENT_BINARY_DIR}/zconf.h
+        zlib.h
+        )
+SET(ZLIB_PRIVATE_HDRS
+        crc32.h
+        deflate.h
+        gzguts.h
+        inffast.h
+        inffixed.h
+        inflate.h
+        inftrees.h
+        trees.h
+        zutil.h
+        )
+SET(ZLIB_SRCS
+        adler32.c
+        compress.c
+        crc32.c
+        deflate.c
+        gzclose.c
+        gzlib.c
+        gzread.c
+        gzwrite.c
+        inflate.c
+        infback.c
+        inftrees.c
+        inffast.c
+        trees.c
+        uncompr.c
+        zutil.c
+        )
 
-if(NOT MINGW)
-    set(ZLIB_DLL_SRCS
-        win32/zlib1.rc # If present will override custom build rule below.
-    )
-endif()
+IF (NOT MINGW)
+    SET(ZLIB_DLL_SRCS
+            win32/zlib1.rc # If present will override custom build rule below.
+            )
+ENDIF ()
 
-if(CMAKE_COMPILER_IS_GNUCC)
-    if(ASM686)
-        set(ZLIB_ASMS contrib/asm686/match.S)
-    elseif (AMD64)
-        set(ZLIB_ASMS contrib/amd64/amd64-match.S)
-    endif ()
+IF (CMAKE_COMPILER_IS_GNUCC)
+    IF (ASM686)
+        SET(ZLIB_ASMS contrib/asm686/match.S)
+    ELSEIF (AMD64)
+        SET(ZLIB_ASMS contrib/amd64/amd64-match.S)
+    ENDIF ()
 
-	if(ZLIB_ASMS)
-		add_definitions(-DASMV)
-		set_source_files_properties(${ZLIB_ASMS} PROPERTIES LANGUAGE C COMPILE_FLAGS -DNO_UNDERLINE)
-	endif()
-endif()
+    IF (ZLIB_ASMS)
+        ADD_DEFINITIONS(-DASMV)
+        SET_SOURCE_FILES_PROPERTIES(${ZLIB_ASMS} PROPERTIES LANGUAGE C COMPILE_FLAGS -DNO_UNDERLINE)
+    ENDIF ()
+ENDIF ()
 
-if(MSVC)
-    if(ASM686)
-		ENABLE_LANGUAGE(ASM_MASM)
-        set(ZLIB_ASMS
-			contrib/masmx86/inffas32.asm
-			contrib/masmx86/match686.asm
-		)
-    elseif (AMD64)
-		ENABLE_LANGUAGE(ASM_MASM)
-        set(ZLIB_ASMS
-			contrib/masmx64/gvmat64.asm
-			contrib/masmx64/inffasx64.asm
-		)
-    endif()
+IF (MSVC)
+    IF (ASM686)
+        ENABLE_LANGUAGE(ASM_MASM)
+        SET(ZLIB_ASMS
+                contrib/masmx86/inffas32.asm
+                contrib/masmx86/match686.asm
+                )
+    ELSEIF (AMD64)
+        ENABLE_LANGUAGE(ASM_MASM)
+        SET(ZLIB_ASMS
+                contrib/masmx64/gvmat64.asm
+                contrib/masmx64/inffasx64.asm
+                )
+    ENDIF ()
 
-	if(ZLIB_ASMS)
-		add_definitions(-DASMV -DASMINF)
-	endif()
-endif()
+    IF (ZLIB_ASMS)
+        ADD_DEFINITIONS(-DASMV -DASMINF)
+    ENDIF ()
+ENDIF ()
 
 # parse the full version number from zlib.h and include in ZLIB_FULL_VERSION
-file(READ ${CMAKE_CURRENT_SOURCE_DIR}/zlib.h _zlib_h_contents)
-string(REGEX REPLACE ".*#define[ \t]+ZLIB_VERSION[ \t]+\"([-0-9A-Za-z.]+)\".*"
-    "\\1" ZLIB_FULL_VERSION ${_zlib_h_contents})
+FILE(READ ${CMAKE_CURRENT_SOURCE_DIR}/zlib.h _zlib_h_contents)
+STRING(REGEX REPLACE ".*#define[ \t]+ZLIB_VERSION[ \t]+\"([-0-9A-Za-z.]+)\".*"
+        "\\1" ZLIB_FULL_VERSION ${_zlib_h_contents})
 
-if(MINGW)
+IF (MINGW)
     # This gets us DLL resource information when compiling on MinGW.
-    if(NOT CMAKE_RC_COMPILER)
-        set(CMAKE_RC_COMPILER windres.exe)
-    endif()
+    IF (NOT CMAKE_RC_COMPILER)
+        SET(CMAKE_RC_COMPILER windres.exe)
+    ENDIF ()
 
-    add_custom_command(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/zlib1rc.obj
-                       COMMAND ${CMAKE_RC_COMPILER}
-                            -D GCC_WINDRES
-                            -I ${CMAKE_CURRENT_SOURCE_DIR}
-                            -I ${CMAKE_CURRENT_BINARY_DIR}
-                            -o ${CMAKE_CURRENT_BINARY_DIR}/zlib1rc.obj
-                            -i ${CMAKE_CURRENT_SOURCE_DIR}/win32/zlib1.rc)
-    set(ZLIB_DLL_SRCS ${CMAKE_CURRENT_BINARY_DIR}/zlib1rc.obj)
-endif(MINGW)
+    ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/zlib1rc.obj
+            COMMAND ${CMAKE_RC_COMPILER}
+            -D GCC_WINDRES
+            -I ${CMAKE_CURRENT_SOURCE_DIR}
+            -I ${CMAKE_CURRENT_BINARY_DIR}
+            -o ${CMAKE_CURRENT_BINARY_DIR}/zlib1rc.obj
+            -i ${CMAKE_CURRENT_SOURCE_DIR}/win32/zlib1.rc)
+    SET(ZLIB_DLL_SRCS ${CMAKE_CURRENT_BINARY_DIR}/zlib1rc.obj)
+ENDIF (MINGW)
 
 
 # The OBJECT's can be used to compile the sources in the list given to add_library
@@ -234,31 +234,30 @@ SET_TARGET_PROPERTIES(ZLib.Framework PROPERTIES C_STANDARD 11)
 TARGET_INCLUDE_DIRECTORIES(ZLib.Framework PUBLIC $<BUILD_INTERFACE:${ZLIB_SOURCE_DIR}>)
 
 
-add_library(zlib SHARED ${ZLIB_SRCS} ${ZLIB_ASMS} ${ZLIB_DLL_SRCS} ${ZLIB_PUBLIC_HDRS} ${ZLIB_PRIVATE_HDRS})
-add_library(zlibstatic STATIC ${ZLIB_SRCS} ${ZLIB_ASMS} ${ZLIB_PUBLIC_HDRS} ${ZLIB_PRIVATE_HDRS})
-set_target_properties(zlib PROPERTIES DEFINE_SYMBOL ZLIB_DLL)
-set_target_properties(zlib PROPERTIES SOVERSION 1)
-
+ADD_LIBRARY(zlib SHARED ${ZLIB_SRCS} ${ZLIB_ASMS} ${ZLIB_DLL_SRCS} ${ZLIB_PUBLIC_HDRS} ${ZLIB_PRIVATE_HDRS})
+ADD_LIBRARY(zlibstatic STATIC ${ZLIB_SRCS} ${ZLIB_ASMS} ${ZLIB_PUBLIC_HDRS} ${ZLIB_PRIVATE_HDRS})
+SET_TARGET_PROPERTIES(zlib PROPERTIES DEFINE_SYMBOL ZLIB_DLL)
+SET_TARGET_PROPERTIES(zlib PROPERTIES SOVERSION 1)
 
 
 #============================================================================
 # Example binaries
 #============================================================================
 
-add_executable(example test/example.c)
-target_link_libraries(example PRIVATE ZLib::Framework)
-add_test(example example)
+ADD_EXECUTABLE(example test/example.c)
+TARGET_LINK_LIBRARIES(example PRIVATE ZLib::Framework)
+ADD_TEST(example example)
 
-add_executable(minigzip test/minigzip.c)
-target_link_libraries(minigzip PRIVATE ZLib::Framework)
+ADD_EXECUTABLE(minigzip test/minigzip.c)
+TARGET_LINK_LIBRARIES(minigzip PRIVATE ZLib::Framework)
 
-if(HAVE_OFF64_T)
-    add_executable(example64 test/example.c)
-    target_link_libraries(example64 PRIVATE ZLib::Framework)
-    set_target_properties(example64 PROPERTIES COMPILE_FLAGS "-D_FILE_OFFSET_BITS=64")
-    add_test(example64 example64)
+IF (HAVE_OFF64_T)
+    ADD_EXECUTABLE(example64 test/example.c)
+    TARGET_LINK_LIBRARIES(example64 PRIVATE ZLib::Framework)
+    SET_TARGET_PROPERTIES(example64 PROPERTIES COMPILE_FLAGS "-D_FILE_OFFSET_BITS=64")
+    ADD_TEST(example64 example64)
 
-    add_executable(minigzip64 test/minigzip.c)
-    target_link_libraries(minigzip64 PRIVATE ZLib::Framework)
-    set_target_properties(minigzip64 PROPERTIES COMPILE_FLAGS "-D_FILE_OFFSET_BITS=64")
-endif()
+    ADD_EXECUTABLE(minigzip64 test/minigzip.c)
+    TARGET_LINK_LIBRARIES(minigzip64 PRIVATE ZLib::Framework)
+    SET_TARGET_PROPERTIES(minigzip64 PROPERTIES COMPILE_FLAGS "-D_FILE_OFFSET_BITS=64")
+ENDIF ()
